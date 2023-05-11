@@ -6,6 +6,8 @@ from albumentations.pytorch import ToTensorV2
 import cv2
 import pytorch_lightning as pl
 
+import subprocess
+
 from src.data.dataset_from_subset import DatasetFromSubset
 
 
@@ -23,9 +25,12 @@ class TrashNetDataModule(pl.LightningDataModule):
 
     def prepare_data(self):
         # download only
-        !wget -nc "https://github.com/garythung/trashnet/raw/master/data/dataset-resized.zip"
-        !unzip -qn ./dataset-resized.zip
-        !rm -rf ./__MACOSX/
+        path = "https://github.com/garythung/trashnet/raw/master/data/dataset-resized.zip"
+        subprocess.run(["wget",  "-nc",  path])
+        zip_path = "./dataset-resized.zip"
+        subprocess.run(["unzip",  "-qn",  zip_path])
+        macos_path = "./__MACOSX/"
+        subprocess.run(["rm",  "-rf",  macos_path])
 
     def setup(self, stage=None):
         # called on every GPU
