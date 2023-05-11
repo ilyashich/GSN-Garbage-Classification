@@ -4,6 +4,8 @@ from hydra.utils import instantiate
 from omegaconf import DictConfig
 import pytorch_lightning as pl
 
+import wandb
+
 from src.callbacks.callbacks import ImagePredictionLogger
 
 @hydra.main(config_path="config/", config_name="config.yaml")
@@ -19,6 +21,8 @@ def main(cfg: DictConfig):
     val_samples = next(iter(data_module.val_dataloader()))
 
     classifier = instantiate(cfg.lightning_module)
+
+    wandb.login(key="ad19c5aa5d4bff28d21f9939714e6f7c8e81a1b7")
 
     logger = instantiate(cfg.logger)
 
@@ -40,6 +44,8 @@ def main(cfg: DictConfig):
 
     # Evaluate the model on the held out test set ⚡⚡
     trainer.test(model=classifier, datamodule=data_module, ckpt_path=cfg.trainer.ckpt_path)
+
+    wandb.finish()
 
 
 
