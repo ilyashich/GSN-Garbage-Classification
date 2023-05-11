@@ -25,8 +25,8 @@ class TrashNetDataModule(pl.LightningDataModule):
 
     def prepare_data(self):
         # download only
-        path = "https://github.com/garythung/trashnet/raw/master/data/dataset-resized.zip"
-        subprocess.run(["wget",  "-nc",  path])
+        url = "https://github.com/garythung/trashnet/raw/master/data/dataset-resized.zip"
+        subprocess.run(["wget",  "-nc",  url, self.data_dir])
         zip_path = "./dataset-resized.zip"
         subprocess.run(["unzip",  "-qn",  zip_path])
         macos_path = "./__MACOSX/"
