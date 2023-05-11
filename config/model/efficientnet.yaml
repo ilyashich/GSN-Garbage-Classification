@@ -1,0 +1,4 @@
+_target_: src.model.efficientnet.efficientnet
+
+version: "B0"
+num_classes: 6

@@ -1,0 +1,21 @@
+hydra:
+  run:
+    dir: logs/hydra/${experiment}/${now:%Y-%m-%d_%H%M%S}
+
+experiment: baseline
+work_dir: ${hydra:runtime.cwd}
+data_dir: ${work_dir}/data/
+
+defaults:
+  - model: efficientnet
+  - data: trashnet_datamodule
+  - lightning_module: efficientnet_model
+  - callbacks: default
+  - logger: wandb
+
+trainer:
+  max_epochs: 100 
+  accelerator: 'gpu'
+  devices: 1
+  log_every_n_steps: 32
+  ckpt_path: None

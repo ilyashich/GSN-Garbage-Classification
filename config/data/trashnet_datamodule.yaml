@@ -1,0 +1,8 @@
+_target_: src.data.trashnet_datamodule.TrashNetDataModule
+
+data_dir: ${data_dir}
+batch_size: 64
+image_size: 224
+
+mean_norm: [0.6732, 0.6399, 0.6049]
+std_norm: [0.2062, 0.2072, 0.2293]
