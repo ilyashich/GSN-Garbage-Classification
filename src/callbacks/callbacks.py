@@ -1,7 +1,5 @@
 import torch
 
-import pytorch_lightning as pl
-from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import Callback
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping

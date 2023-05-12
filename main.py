@@ -8,13 +8,12 @@ import wandb
 
 from src.callbacks.callbacks import ImagePredictionLogger
 
-@hydra.main(config_path="config/", config_name="config.yaml")
+@hydra.main(config_path="config/", config_name="config.yaml", version_base='1.3')
 def main(cfg: DictConfig):
 
-    model, image_size = instantiate(cfg.model) 
+    model = instantiate(cfg.model) 
 
     data_module = instantiate(cfg.data)
-    data_module.image_size = image_size 
     data_module.prepare_data()
     data_module.setup()
 
@@ -26,16 +25,19 @@ def main(cfg: DictConfig):
 
     logger = instantiate(cfg.logger)
 
-    early_stop_callback = instantiate(cfg.callbacks.early_stopping)
+    callbacks = []
+    for _, cb_conf in cfg.callbacks.items():
+        callbacks.append(instantiate(cb_conf))
 
-    checkpoint_callback = instantiate(cfg.callbacks.model_checkpoint)
+    callbacks.append(ImagePredictionLogger(val_samples))
+
 
     # Initialize a trainer
     trainer = pl.Trainer(max_epochs=cfg.trainer.max_epochs,
                      accelerator=cfg.trainer.accelerator,
                      devices = cfg.trainer.devices,
                      logger = logger,
-                     callbacks=[checkpoint_callback, early_stop_callback, ImagePredictionLogger(val_samples)],
+                     callbacks=callbacks,
                      log_every_n_steps = cfg.trainer.log_every_n_steps
                      )
 

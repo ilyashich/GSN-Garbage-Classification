@@ -1,6 +1,6 @@
 _target_: src.data.trashnet_datamodule.TrashNetDataModule
 
-data_dir: ${data_dir}
+data_dir: ${work_dir}/data/
 batch_size: 64
 image_size: 224
 

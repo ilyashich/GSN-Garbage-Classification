@@ -224,5 +224,5 @@ def efficientnet(version, num_classes):
         ModelBlockConfig(block=MBConv, in_channels=192, out_channels=320, layers=1, kernel_size=3, stride=1, expansion_rate=6, depth_scale=depth_scale, width_scale=width_scale)
     ]
     
-    return EfficientNet(num_classes, model_blocks, model_coeffs[version].dropout), model_coeffs[version].resolution
+    return EfficientNet(num_classes, model_blocks, model_coeffs[version].dropout)
       

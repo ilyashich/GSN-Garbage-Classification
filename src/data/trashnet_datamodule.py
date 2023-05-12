@@ -14,7 +14,7 @@ from src.data.dataset_from_subset import DatasetFromSubset
 
 class TrashNetDataModule(pl.LightningDataModule):
 
-    def __init__(self,  batch_size=64, image_size=224, data_dir = "./dataset-resized", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293)):
+    def __init__(self,  batch_size=64, image_size=224, data_dir = "./data/dataset-resized", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293)):
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
@@ -26,16 +26,14 @@ class TrashNetDataModule(pl.LightningDataModule):
     def prepare_data(self):
         # download only
         url = "https://github.com/garythung/trashnet/raw/master/data/dataset-resized.zip"
-        subprocess.run(["wget",  "-nc",  url, self.data_dir])
-        zip_path = "./dataset-resized.zip"
-        subprocess.run(["unzip",  "-qn",  zip_path])
-        macos_path = "./__MACOSX/"
-        subprocess.run(["rm",  "-rf",  macos_path])
+        subprocess.run(["wget",  "-nc", "-P", self.data_dir, url])
+        subprocess.run(["unzip",  "-qn",  self.data_dir + "dataset-resized.zip", "-d", self.data_dir])
+        subprocess.run(["rm",  "-rf",  self.data_dir + "__MACOSX/"])
 
     def setup(self, stage=None):
         # called on every GPU
         # use our dataset and defined transformations
-        trashnet_dataset = ImageFolder(root=self.data_dir, is_valid_file=self.is_valid_image)
+        trashnet_dataset = ImageFolder(root=self.data_dir + "dataset-resized", is_valid_file=self.is_valid_image)
         train_subset, val_subset, test_subset = random_split(trashnet_dataset, [2023, 252, 252], generator=torch.Generator().manual_seed(42))
         
         if stage == 'fit' or stage is None:
