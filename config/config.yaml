@@ -8,6 +8,8 @@ num_classes: 6
 model_version: 'B0'
 ckpt_path: null
 
+wandb_key: null
+
 defaults:
   - _self_
   - model: efficientnet
