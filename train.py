@@ -43,6 +43,9 @@ def main(cfg: DictConfig):
 
     # Train the model
     trainer.fit(model=classifier, datamodule=data_module)
+    
+    # Evaluate the model on the held out test set ⚡⚡
+    trainer.test(model=classifier, datamodule=data_module, ckpt_path=cfg.ckpt_path)
 
     wandb.finish()
 
