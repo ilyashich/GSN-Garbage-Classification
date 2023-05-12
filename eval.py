@@ -27,7 +27,8 @@ def main(cfg: DictConfig):
     # Initialize a trainer
     trainer = pl.Trainer(
                     **OmegaConf.to_container(cfg.trainer),
-                    accelerator = device
+                    accelerator = device,
+                    logger=logger
     )
 
     # Evaluate the model on the held out test set ⚡⚡
