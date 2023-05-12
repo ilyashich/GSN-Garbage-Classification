@@ -18,38 +18,24 @@ def main(cfg: DictConfig):
     data_module.prepare_data()
     data_module.setup()
 
-    val_samples = next(iter(data_module.val_dataloader()))
-
     classifier = instantiate(cfg.lightning_module)
 
-    wandb.login(key="ad19c5aa5d4bff28d21f9939714e6f7c8e81a1b7")
+    wandb.login()
 
     logger = instantiate(cfg.logger)
-
-    callbacks = []
-    for _, cb_conf in cfg.callbacks.items():
-        callbacks.append(instantiate(cb_conf))
-
-    callbacks.append(ImagePredictionLogger(val_samples))
 
 
     # Initialize a trainer
     trainer = pl.Trainer(
                     **OmegaConf.to_container(cfg.trainer),
                     accelerator = device,
-                    logger = logger,
-                    callbacks=callbacks
+                    logger = logger
     )
 
-    # Train the model
-    trainer.fit(model=classifier, datamodule=data_module)
-
     # Evaluate the model on the held out test set ⚡⚡
-    trainer.test(model=classifier, datamodule=data_module, ckpt_path=cfg.trainer.ckpt_path)
+    trainer.test(model=classifier, datamodule=data_module, ckpt_path=cfg.ckpt_path)
 
     wandb.finish()
-
-
 
 if __name__ == "__main__":
     main()
