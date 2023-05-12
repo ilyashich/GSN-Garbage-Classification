@@ -1,7 +1,8 @@
+import torch
 import hydra
 from hydra.utils import instantiate
 
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 import pytorch_lightning as pl
 
 import wandb
@@ -11,7 +12,7 @@ from src.callbacks.callbacks import ImagePredictionLogger
 @hydra.main(config_path="config/", config_name="config.yaml", version_base='1.3')
 def main(cfg: DictConfig):
 
-    model = instantiate(cfg.model) 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
 
     data_module = instantiate(cfg.data)
     data_module.prepare_data()
@@ -33,13 +34,12 @@ def main(cfg: DictConfig):
 
 
     # Initialize a trainer
-    trainer = pl.Trainer(max_epochs=cfg.trainer.max_epochs,
-                     accelerator=cfg.trainer.accelerator,
-                     devices = cfg.trainer.devices,
-                     logger = logger,
-                     callbacks=callbacks,
-                     log_every_n_steps = cfg.trainer.log_every_n_steps
-                     )
+    trainer = pl.Trainer(
+                    **OmegaConf.to_container(cfg.trainer),
+                    accelerator = device,
+                    logger = logger,
+                    callbacks=callbacks
+    )
 
     # Train the model
     trainer.fit(model=classifier, datamodule=data_module)

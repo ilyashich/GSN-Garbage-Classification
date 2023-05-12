@@ -26,7 +26,7 @@ class ImagePredictionLogger(Callback):
         preds = torch.argmax(logits, -1)
         # Log the images as wandb Image
         trainer.logger.experiment.log({
-            "examples":[wandb.Image(x, caption=f"Predicted :{classes[pred]}, Label:{classes[y]}") 
+            "examples":[wandb.Image(x, caption=f"Predicted : {classes[pred]}, Label : {classes[y]}") 
                            for x, pred, y in zip(val_imgs[:self.num_samples], 
                                                  preds[:self.num_samples], 
                                                  val_labels[:self.num_samples])]
