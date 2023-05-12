@@ -82,24 +82,18 @@ class MBConv(nn.Module):
         self.use_res_connection = stride == 1 and in_channels == out_channels
         expanded_channels = in_channels * expansion_rate
         
-        self.mbconv = nn.Sequential(
-            #expand
-            ConvNormAct(in_channels, expanded_channels, kernel_size=1) if expanded_channels != in_channels else nn.Identity(),
-            
-            #depth-wise conv
-            ConvNormAct(expanded_channels, expanded_channels, kernel_size=kernel_size, stride=stride, groups=expanded_channels),
-
-            #se block
-            SEBlock(expanded_channels, in_channels//reduction),
-
-            #point-wise conv
-            ConvNormAct(expanded_channels, out_channels, kernel_size=1, act=False)
-        )
+        self.expand = ConvNormAct(in_channels, expanded_channels, kernel_size=1) if expanded_channels != in_channels else nn.Identity()
+        self.depthwise_conv = ConvNormAct(expanded_channels, expanded_channels, kernel_size=kernel_size, stride=stride, groups=expanded_channels)
+        self.se = SEBlock(expanded_channels, in_channels//reduction)
+        self.pointwise_conv = ConvNormAct(expanded_channels, out_channels, kernel_size=1, act=False)
         
         self.stochastic_depth = StochasticDepth(survival_prob=survival_prob)
         
     def forward(self, inputs):
-        x = self.mbconv(inputs)
+        x = self.expand(inputs)
+        x = self.depthwise_conv(x)
+        x = self.se(x)
+        x = self.pointwise_conv(x)
         
         if self.use_res_connection:
             x = self.stochastic_depth(x)
