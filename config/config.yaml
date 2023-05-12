@@ -5,6 +5,7 @@ hydra:
 experiment: baseline
 work_dir: ${hydra:runtime.cwd}
 num_classes: 6
+model_version: 'B0'
 
 defaults:
   - _self_

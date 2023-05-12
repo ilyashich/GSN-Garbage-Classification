@@ -14,11 +14,22 @@ from src.data.dataset_from_subset import DatasetFromSubset
 
 class TrashNetDataModule(pl.LightningDataModule):
 
-    def __init__(self,  batch_size=64, image_size=224, data_dir = "./data/dataset-resized", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293)):
+    def __init__(self,  batch_size=64, model_version="B0", data_dir = "./data/dataset-resized", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293)):
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.image_size = image_size
+        self.image_sizes = {
+            "B0": (224, 256),
+            "B1": (240, 276),
+            "B2": (260, 296),
+            "B3": (300, 344),
+            "B4": (380, 432),
+            "B5": (456, 520),
+            "B6": (528, 600),
+            "B7": (600, 684)
+        }
+        self.crop_image_size = self.image_sizes[model_version][0]
+        self.scale_image_size = self.image_sizes[model_version][1]
         
         self.mean_norm = mean_norm
         self.std_norm = std_norm
@@ -55,8 +66,8 @@ class TrashNetDataModule(pl.LightningDataModule):
     def get_train_transform(self):
         return A.Compose(
             [
-                A.SmallestMaxSize(max_size=int(self.image_size*1.1)),
-                A.RandomCrop(height=self.image_size, width=self.image_size),
+                A.SmallestMaxSize(max_size=self.scale_image_size),
+                A.RandomCrop(height=self.crop_image_size, width=self.crop_image_size),
                 A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=180, p=0.5),
                 A.Flip(p=0.5),
                 A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5),
@@ -70,8 +81,8 @@ class TrashNetDataModule(pl.LightningDataModule):
     def get_val_test_transform(self):
         return A.Compose(
             [
-                A.SmallestMaxSize(max_size=int(self.image_size*1.1)),
-                A.CenterCrop(height=self.image_size, width=self.image_size),
+                A.SmallestMaxSize(max_size=self.scale_image_size),
+                A.CenterCrop(height=self.crop_image_size, width=self.crop_image_size),
                 A.Normalize(mean=self.mean_norm, std=self.std_norm),
                 ToTensorV2()
             ]
