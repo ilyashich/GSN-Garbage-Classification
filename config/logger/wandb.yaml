@@ -1,5 +1,6 @@
 _target_: pytorch_lightning.loggers.WandbLogger
 
 project: 'gsn-garbage-classification' 
+name: 'gsn-baseline-'${model_version}
 job_type: 'train'
 save_dir: ${work_dir}/logs
