@@ -20,6 +20,10 @@ def main(cfg: DictConfig):
 
     classifier = instantiate(cfg.lightning_module)
 
+    wandb.login(key=cfg.wandb_key)
+
+    logger = instantiate(cfg.logger)
+
     # Initialize a trainer
     trainer = pl.Trainer(
                     **OmegaConf.to_container(cfg.trainer),
@@ -28,6 +32,8 @@ def main(cfg: DictConfig):
 
     # Evaluate the model on the held out test set ⚡⚡
     trainer.test(model=classifier, datamodule=data_module, ckpt_path=cfg.ckpt_path)
+
+    wandb.finish()
 
 if __name__ == "__main__":
     main()
