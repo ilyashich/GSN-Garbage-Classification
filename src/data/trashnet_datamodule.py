@@ -56,13 +56,13 @@ class TrashNetDataModule(pl.LightningDataModule):
             self.dataset_test = DatasetFromSubset(val_subset, transform=self.get_val_test_transform())
         
     def train_dataloader(self):
-        return DataLoader(self.dataset_train, batch_size=self.batch_size, shuffle=True, pin_memory=True, num_workers=2, persistent_workers=True)
+        return DataLoader(self.dataset_train, batch_size=self.batch_size, shuffle=True, pin_memory=True, num_workers=2)
 
     def test_dataloader(self):
-        return DataLoader(self.dataset_test, batch_size=self.batch_size, shuffle=False, pin_memory=True, num_workers=2, persistent_workers=True)
+        return DataLoader(self.dataset_test, batch_size=self.batch_size, shuffle=False, pin_memory=True, num_workers=2)
 
     def val_dataloader(self):
-        return DataLoader(self.dataset_val, batch_size=self.batch_size, shuffle=False, pin_memory=True, num_workers=2, persistent_workers=True)
+        return DataLoader(self.dataset_val, batch_size=self.batch_size, shuffle=False, pin_memory=True, num_workers=2)
     
     def get_train_transform(self):
         return A.Compose(
