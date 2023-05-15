@@ -49,32 +49,12 @@ class EfficientNetModule(pl.LightningModule):
         self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         self.log('val_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True) 
         return {'val_loss':loss, 'val_acc': acc, 'labels': y, 'outputs': preds}
-    
-    def validation_epoch_end(self, outs):
-        labels = torch.cat([o['labels'] for o in outs])
-        outputs = torch.cat([o['outputs'] for o in outs])
-
-
-        class_names=["cardboard", "glass", "metal", "paper", "plastic", "trash"]
-        cf_matrix = torchmetrics.functional.classification.confusion_matrix(outputs, labels, num_classes=self.num_classes, task="multiclass").cpu().numpy()
-        #disp = ConfusionMatrixDisplay(confusion_matrix=cf_matrix / np.sum(cf_matrix, axis=1)[:, None], display_labels=class_names)
-        dataframe = pd.DataFrame(cf_matrix / np.sum(cf_matrix, axis=1)[:, None], index = [i for i in class_names],
-                         columns = [i for i in class_names])
-        plt.figure(figsize = (8,6))
-        sn.heatmap(dataframe, annot=True)
-
-        plt.title("Confusion Matrix")
-        plt.ylabel("True Class"), 
-        plt.xlabel("Predicted Class")
-
-        self.logger.experiment.log({"media/val_confusion_matrix": wandb.Image(plt)})
-        plt.close()
         
     def test_step(self, batch, batch_idx):
-        loss, acc, _, _ = self.common_test_valid_step(batch, batch_idx)
+        loss, acc, y, preds = self.common_test_valid_step(batch, batch_idx)
         self.log('test_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         self.log('test_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        return {'test_loss':loss, 'test_acc': acc}
+        return {'test_loss':loss, 'test_acc': acc, 'labels': y, 'outputs': preds}
         
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
