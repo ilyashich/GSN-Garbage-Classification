@@ -11,7 +11,7 @@ import torchmetrics
 import wandb
 
 
-class EfficientNetModel(pl.LightningModule):
+class EfficientNetModule(pl.LightningModule):
     def __init__(self, model, num_classes, learning_rate=1e-3, weight_decay=1e-5):
         super().__init__()
         self.save_hyperparameters(ignore=['model'])

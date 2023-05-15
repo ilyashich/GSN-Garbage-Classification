@@ -7,8 +7,6 @@ import pytorch_lightning as pl
 
 import wandb
 
-from src.callbacks.callbacks import ImagePredictionLogger
-
 @hydra.main(config_path="config/", config_name="config.yaml", version_base='1.3')
 def main(cfg: DictConfig):
 

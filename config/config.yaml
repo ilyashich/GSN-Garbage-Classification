@@ -14,7 +14,7 @@ defaults:
   - _self_
   - model: efficientnet
   - data: trashnet_datamodule
-  - lightning_module: efficientnet_model
+  - lightning_module: efficientnet_module
   - callbacks: default
   - logger: wandb
   - trainer: trainer
