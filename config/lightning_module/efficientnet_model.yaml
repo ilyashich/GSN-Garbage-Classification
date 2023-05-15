@@ -1,8 +1,7 @@
 _target_: src.lightning_module.efficientnet_model.EfficientNetModel
 
 
-defaults:
-  - /model/efficientnet
+model: /model/efficientnet
 
 learning_rate: 1e-3
 weight_decay: 1e-5
