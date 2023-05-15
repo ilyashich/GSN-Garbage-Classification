@@ -7,6 +7,8 @@ import pytorch_lightning as pl
 
 import wandb
 
+from src.callbacks.callbacks import ConfusionMatrixLogger
+
 @hydra.main(config_path="config/", config_name="config.yaml", version_base='1.3')
 def main(cfg: DictConfig):
 
@@ -26,7 +28,8 @@ def main(cfg: DictConfig):
     trainer = pl.Trainer(
                     **OmegaConf.to_container(cfg.trainer),
                     accelerator = device,
-                    logger=logger
+                    logger=logger,
+                    callbacks=ConfusionMatrixLogger()
     )
 
     # Evaluate the model on the held out test set ⚡⚡

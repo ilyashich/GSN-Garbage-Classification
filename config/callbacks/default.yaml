@@ -6,14 +6,14 @@ model_checkpoint:
   save_top_k: 3
   mode: 'max'
 
-  verbose: False
-  save_last: null
-  save_weights_only: False
-  auto_insert_metric_name: True
-  every_n_train_steps: null
-  train_time_interval: null
-  every_n_epochs: null 
-  save_on_train_epoch_end: null
+  #verbose: False
+  save_last: True
+  #save_weights_only: False
+  #auto_insert_metric_name: True
+  #every_n_train_steps: null
+  #train_time_interval: null
+  #every_n_epochs: null 
+  #save_on_train_epoch_end: null
 
 early_stopping:
   _target_: pytorch_lightning.callbacks.early_stopping.EarlyStopping
@@ -21,11 +21,11 @@ early_stopping:
   patience: 10
   mode: 'min'
 
-  min_delta: 0.0
-  verbose: False
-  strict: True 
-  check_finite: True 
-  stopping_threshold: null 
-  divergence_threshold: null 
-  check_on_train_epoch_end: null 
-  log_rank_zero_only: False
+  #min_delta: 0.0
+  #verbose: False
+  #strict: True 
+  #check_finite: True 
+  #stopping_threshold: null 
+  #divergence_threshold: null 
+  #check_on_train_epoch_end: null 
+  #log_rank_zero_only: False
