@@ -13,8 +13,6 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 @hydra.main(config_path="config/", config_name="config.yaml", version_base='1.3')
 def main(cfg: DictConfig):
 
-    pl.seed_everything(cfg.seed, workers=True)
-
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     data_module = instantiate(cfg.data)

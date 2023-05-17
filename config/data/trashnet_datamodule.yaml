@@ -6,3 +6,5 @@ model_version: ${model_version}
 
 mean_norm: [0.6732, 0.6399, 0.6049]
 std_norm: [0.2062, 0.2072, 0.2293]
+
+generator_seed: 42
