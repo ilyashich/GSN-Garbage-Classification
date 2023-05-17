@@ -14,7 +14,7 @@ from src.data.dataset_from_subset import DatasetFromSubset
 
 class TrashNetDataModule(pl.LightningDataModule):
 
-    def __init__(self,  batch_size=64, model_version="B0", data_dir = "./data/dataset-resized", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293), generator_seed=42):
+    def __init__(self,  batch_size=64, model_version="B0", data_dir = "./data/dataset-resized", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293)):
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
@@ -33,7 +33,6 @@ class TrashNetDataModule(pl.LightningDataModule):
         
         self.mean_norm = mean_norm
         self.std_norm = std_norm
-        self.generator_seed = generator_seed
 
     def prepare_data(self):
         # download only
@@ -46,7 +45,7 @@ class TrashNetDataModule(pl.LightningDataModule):
         # called on every GPU
         # use our dataset and defined transformations
         trashnet_dataset = ImageFolder(root=self.data_dir + "dataset-resized", is_valid_file=self.is_valid_image)
-        train_subset, val_subset, test_subset = random_split(trashnet_dataset, [2023, 252, 252], generator=torch.Generator().manual_seed(self.generator_seed))
+        train_subset, val_subset, test_subset = random_split(trashnet_dataset, [2023, 252, 252])
         
         if stage == 'fit' or stage is None:
             self.dataset_train = DatasetFromSubset(train_subset, transform=self.get_train_transform())

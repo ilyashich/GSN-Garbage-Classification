@@ -8,9 +8,12 @@ import pytorch_lightning as pl
 import wandb
 
 from src.callbacks.callbacks import ImagePredictionLogger, ConfusionMatrixLogger
+from pytorch_lightning.callbacks import LearningRateMonitor
 
 @hydra.main(config_path="config/", config_name="config.yaml", version_base='1.3')
 def main(cfg: DictConfig):
+
+    pl.seed_everything(cfg.seed, workers=True)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -28,6 +31,7 @@ def main(cfg: DictConfig):
 
     callbacks.append(ImagePredictionLogger())
     callbacks.append(ConfusionMatrixLogger())
+    callbacks.append(LearningRateMonitor(logging_interval='epoch'))
 
 
     # Initialize a trainer

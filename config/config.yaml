@@ -7,6 +7,7 @@ work_dir: ${hydra:runtime.cwd}
 num_classes: 6
 model_version: 'B0'
 ckpt_path: null
+seed: 42
 
 wandb_key: null
 
