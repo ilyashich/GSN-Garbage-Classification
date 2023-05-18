@@ -58,4 +58,7 @@ class EfficientNetModule(pl.LightningModule):
         
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
-        return optimizer
+        lr_lambda = lambda epoch: 0.98 ** epoch
+        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        #lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1) 
+        return [optimizer], [lr_scheduler] 
