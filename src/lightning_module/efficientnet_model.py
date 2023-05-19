@@ -40,20 +40,20 @@ class EfficientNetModule(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         loss, acc, _, _ = self.common_test_valid_step(batch, batch_idx)
-        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('train_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)    
+        self.log('train_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_acc', acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)    
         return {'loss':loss, 'train_acc':acc}
 
     def validation_step(self, batch, batch_idx):
         loss, acc, y, preds = self.common_test_valid_step(batch, batch_idx)
-        self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('val_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True) 
+        self.log('val_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_acc', acc, on_step=False, on_epoch=True, prog_bar=True, logger=True) 
         return {'val_loss':loss, 'val_acc': acc, 'labels': y, 'outputs': preds}
         
     def test_step(self, batch, batch_idx):
         loss, acc, y, preds = self.common_test_valid_step(batch, batch_idx)
-        self.log('test_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        self.log('test_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('test_loss', loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('test_acc', acc, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         return {'test_loss':loss, 'test_acc': acc, 'labels': y, 'outputs': preds}
         
     def configure_optimizers(self):
