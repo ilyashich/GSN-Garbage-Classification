@@ -185,7 +185,10 @@ class ModelBlockConfig():
         self.expansion_rate = expansion_rate
 
     def make_channels_divisible_by_8(self, num_channels, divisor=8):
-        return max(divisor, int(num_channels + divisor / 2) // divisor * divisor)
+        new_width = max(divisor, int(num_channels + divisor / 2) // divisor * divisor)
+        if new_width < 0.9 * num_channels:
+            new_width += divisor
+        return new_width
 
     def rescale_layers(self, layers, depth_scale):
         return int(math.ceil(layers * depth_scale))
