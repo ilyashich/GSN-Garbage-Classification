@@ -12,11 +12,12 @@ import wandb
 
 
 class EfficientNetModule(pl.LightningModule):
-    def __init__(self, model, num_classes, learning_rate=1e-3, weight_decay=1e-5):
+    def __init__(self, model, num_classes, learning_rate=1e-3, weight_decay=1e-5, gamma=0.99):
         super().__init__()
         self.save_hyperparameters(ignore=['model'])
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
+        self.gamma = gamma
         self.model = model
         self.num_classes = num_classes
 
@@ -58,7 +59,8 @@ class EfficientNetModule(pl.LightningModule):
         
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
-        lr_lambda = lambda epoch: 0.99 ** epoch
-        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        #lr_lambda = lambda epoch: 0.99 ** epoch
+        #lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
+        lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma = self.gamma)
         #lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1) 
         return [optimizer], [lr_scheduler] 

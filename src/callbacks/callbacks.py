@@ -62,8 +62,8 @@ class ConfusionMatrixLogger(Callback):
 
         self.log_conf_matrix(name="media/val_confusion_matrix", labels=labels, outputs=outputs, num_classes=pl_module.num_classes, classes=classes, trainer=trainer)        
 
-        self.val_outs["outputs"] = []
-        self.val_outs["labels"] = []
+        self.val_outs["outputs"].clear()
+        self.val_outs["labels"].clear()
 
     def on_test_epoch_end(self, trainer, pl_module):
         labels = torch.cat(self.test_outs["labels"])
@@ -73,8 +73,8 @@ class ConfusionMatrixLogger(Callback):
 
         self.log_conf_matrix(name="media/test_confusion_matrix", labels=labels, outputs=outputs, num_classes=pl_module.num_classes, classes=classes, trainer=trainer)        
 
-        self.test_outs["outputs"] = []
-        self.test_outs["labels"] = []
+        self.test_outs["outputs"].clear()
+        self.test_outs["labels"].clear()
 
     def log_conf_matrix(self, name, labels, outputs, num_classes, classes, trainer):
         cf_matrix = torchmetrics.functional.classification.confusion_matrix(outputs, labels, num_classes=num_classes, task="multiclass").cpu().numpy()

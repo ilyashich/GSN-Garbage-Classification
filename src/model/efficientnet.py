@@ -195,22 +195,22 @@ class ModelBlockConfig():
     
 
 class ModelCoeffsConfig():
-    def __init__(self, phi, dropout):
+    def __init__(self, depth_scale, width_scale, dropout):
         self.dropout = dropout
-        self.depth_scale = 1.2**phi
-        self.width_scale = 1.1**phi
+        self.depth_scale = depth_scale
+        self.width_scale = width_scale
 
 
 def efficientnet(version, num_classes):
     model_coeffs = {
-        "B0": ModelCoeffsConfig(0, 0.2),
-        "B1": ModelCoeffsConfig(0.5, 0.2),
-        "B2": ModelCoeffsConfig(1, 0.3),
-        "B3": ModelCoeffsConfig(2, 0.3),
-        "B4": ModelCoeffsConfig(3, 0.4),
-        "B5": ModelCoeffsConfig(4, 0.4),
-        "B6": ModelCoeffsConfig(5, 0.5),
-        "B7": ModelCoeffsConfig(6, 0.5),
+        "B0": ModelCoeffsConfig(1.0, 1.0, 0.2),
+        "B1": ModelCoeffsConfig(1.0, 1.1, 0.2),
+        "B2": ModelCoeffsConfig(1.1, 1.2, 0.3),
+        "B3": ModelCoeffsConfig(1.2, 1.4, 0.3),
+        "B4": ModelCoeffsConfig(1.4, 1.8, 0.4),
+        "B5": ModelCoeffsConfig(1.6, 2.2, 0.4),
+        "B6": ModelCoeffsConfig(1.8, 2.6, 0.5),
+        "B7": ModelCoeffsConfig(2.0, 3.1, 0.5),
     }
 
     depth_scale = model_coeffs[version].depth_scale
