@@ -74,7 +74,7 @@ class TrashNetDataModule(pl.LightningDataModule):
                 A.HorizontalFlip(),
                 A.HueSaturationValue(),
                 A.FancyPCA(),
-                #A.Perspective(),
+                A.Perspective(),
                 #A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5),
                 #A.RandomBrightnessContrast(p=0.5),
                 #A.CoarseDropout(max_holes=1, max_height=96, max_width=96),
