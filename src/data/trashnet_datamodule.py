@@ -22,11 +22,11 @@ class TrashNetDataModule(pl.LightningDataModule):
             "B0": (224, 256),
             "B1": (240, 276),
             "B2": (260, 296),
-            "B3": (300, 344),
-            "B4": (380, 432),
-            "B5": (456, 520),
-            "B6": (528, 600),
-            "B7": (600, 684)
+            "B3": (224, 256),
+            "B4": (224, 256),
+            "B5": (224, 256),
+            "B6": (224, 256),
+            "B7": (224, 256)
         }
         self.crop_image_size = self.image_sizes[model_version][0]
         self.scale_image_size = self.image_sizes[model_version][1]
