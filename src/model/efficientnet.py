@@ -80,7 +80,7 @@ class MBConv(nn.Module):
     ):
         super().__init__()
         self.use_res_connection = stride == 1 and in_channels == out_channels
-        expanded_channels = in_channels * expansion_rate
+        expanded_channels = self.make_channels_divisible_by_8(in_channels * expansion_rate)
         
         self.expand = ConvNormAct(in_channels, expanded_channels, kernel_size=1) if expanded_channels != in_channels else nn.Identity()
         self.depthwise_conv = ConvNormAct(expanded_channels, expanded_channels, kernel_size=kernel_size, stride=stride, groups=expanded_channels)
@@ -100,6 +100,12 @@ class MBConv(nn.Module):
             x += inputs
           
         return x
+    
+    def make_channels_divisible_by_8(self, num_channels, divisor=8):
+        new_width = max(divisor, int(num_channels + divisor / 2) // divisor * divisor)
+        if new_width < 0.9 * num_channels:
+            new_width += divisor
+        return new_width
         
 
 
@@ -195,10 +201,10 @@ class ModelBlockConfig():
     
 
 class ModelCoeffsConfig():
-    def __init__(self, depth_scale, width_scale, dropout):
+    def __init__(self,width_scale, depth_scale, dropout):
         self.dropout = dropout
-        self.depth_scale = depth_scale
         self.width_scale = width_scale
+        self.depth_scale = depth_scale
 
 
 def efficientnet(version, num_classes):

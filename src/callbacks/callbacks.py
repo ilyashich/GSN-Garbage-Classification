@@ -69,7 +69,7 @@ class ConfusionMatrixLogger(Callback):
         labels = torch.cat(self.test_outs["labels"])
         outputs = torch.cat(self.test_outs["outputs"])
 
-        classes = trainer.datamodule.dataset_train.subset.dataset.classes
+        classes = trainer.datamodule.dataset_test.subset.dataset.classes
 
         self.log_conf_matrix(name="media/test_confusion_matrix", labels=labels, outputs=outputs, num_classes=pl_module.num_classes, classes=classes, trainer=trainer)        
 

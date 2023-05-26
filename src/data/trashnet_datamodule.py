@@ -14,7 +14,7 @@ from src.data.dataset_from_subset import DatasetFromSubset
 
 class TrashNetDataModule(pl.LightningDataModule):
 
-    def __init__(self,  batch_size=64, model_version="B0", data_dir = "./data/dataset-resized", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293), generator_seed=42):
+    def __init__(self,  batch_size=128, model_version="B0", data_dir = "./data/", mean_norm = (0.6732, 0.6399, 0.6049), std_norm=(0.2062, 0.2072, 0.2293), generator_seed=42):
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
@@ -50,10 +50,10 @@ class TrashNetDataModule(pl.LightningDataModule):
         
         if stage == 'fit' or stage is None:
             self.dataset_train = DatasetFromSubset(train_subset, transform=self.get_train_transform())
-            self.dataset_val = DatasetFromSubset(test_subset, transform=self.get_val_test_transform())
+            self.dataset_val = DatasetFromSubset(val_subset, transform=self.get_val_test_transform())
             
         if stage == 'test' or stage is None:
-            self.dataset_test = DatasetFromSubset(val_subset, transform=self.get_val_test_transform())
+            self.dataset_test = DatasetFromSubset(test_subset, transform=self.get_val_test_transform())
         
     def train_dataloader(self):
         return DataLoader(self.dataset_train, batch_size=self.batch_size, shuffle=True, pin_memory=True, num_workers=2)
@@ -69,11 +69,15 @@ class TrashNetDataModule(pl.LightningDataModule):
             [
                 A.SmallestMaxSize(max_size=self.scale_image_size),
                 A.RandomCrop(height=self.crop_image_size, width=self.crop_image_size),
-                A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=180, p=0.5),
-                A.Flip(p=0.5),
-                A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5),
-                A.RandomBrightnessContrast(p=0.5),
-                A.CoarseDropout(max_holes=1, max_height=96, max_width=96),
+                A.Rotate(),
+                A.VerticalFlip(),
+                A.HorizontalFlip(),
+                A.HueSaturationValue(),
+                A.FancyPCA(),
+                #A.Perspective(),
+                #A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=15, p=0.5),
+                #A.RandomBrightnessContrast(p=0.5),
+                #A.CoarseDropout(max_holes=1, max_height=96, max_width=96),
                 A.Normalize(mean=self.mean_norm, std=self.std_norm),
                 ToTensorV2(),
             ]
